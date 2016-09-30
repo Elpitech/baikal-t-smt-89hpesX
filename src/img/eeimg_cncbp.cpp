@@ -124,12 +124,15 @@ void eeimg_cncbp(const char *fname)
 	iface.init(CSR(SW_BASE, IOEXPADDR4), IOEXPADDR4_INIT);
 	iface.init(CSR(SW_BASE, IOEXPADDR5), IOEXPADDR5_INIT);
 
-	/*! Setup NTSDATA register to declare just one Primary port and
+	/* Setup NTSDATA register to declare just one Primary port and
 	 *  multiple Secondary ones:
 	 *  Port 0 - Primary port,
 	 *  Port 4 - 20 - secondary ports (six ports altogether) */
 	for (idx = 0; idx < IDT_PORTCNT; idx++)
 		iface.init(CSR(ntx_base[idx], NTSDATA), NTSDATA_PORT0_PRI);
+
+	/* Get back default delays */
+	iface.init(CSR(SW_BASE, BASE_DELAY), DELAYS_CNT, defdelay);
 
 	/* Put control sum to the last frame */
 	iface.chksum();
