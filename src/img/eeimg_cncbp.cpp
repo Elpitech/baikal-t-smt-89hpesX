@@ -23,6 +23,12 @@
 static const uint32_t ntx_base[IDT_PORTCNT] = {NT0_BASE,  NT2_BASE,  NT4_BASE,
 	NT6_BASE, NT8_BASE, NT12_BASE, NT16_BASE, NT20_BASE};
 
+/*! @var delays
+ *   IDT PCIe-switch boot delays
+ */
+static const uint32_t delays[DELAYS_CNT] = {RDRAINDELAY, POMCDELAY, SEDELAY,
+	USSBRDELAY};
+
 /*! @var nodelay
  *   IDT PCIe-switch boot zero-delays
  */
@@ -83,9 +89,6 @@ void eeimg_cncbp(const char *fname)
 	EEExtBlock iface(fname);
 	uint32_t idx;
 
-	/* Make no delays on reset to speed the initialization up */
-	iface.init(CSR(SW_BASE, BASE_DELAY), DELAYS_CNT, nodelay);
-
 	/* Initialize the ports clocking mode so the Port 0 works in local clock-mode
 	 * and others have global clock */
 	iface.init(CSR(SW_BASE, PCLKMODE), PCLKMODE_INIT);
@@ -102,7 +105,7 @@ void eeimg_cncbp(const char *fname)
 		/* Wait for partition state is changed */
 		iface.wait(CSR(SW_BASE, swpartsts[idx]), SWPARTxSTS_SCC, SWPARTxSTS_SCC_UNMSK);
 		/* Clear the status register */
-		iface.init(CSR(SW_BASE, swpartctl[idx]), SWPARTxSTS_SCI_SCC_CLEAR);
+		iface.init(CSR(SW_BASE, swpartsts[idx]), SWPARTxSTS_SCI_SCC_CLEAR);
 	}
 
 	/* Initialize the ports mode and wait until the change is done
@@ -130,9 +133,6 @@ void eeimg_cncbp(const char *fname)
 	 *  Port 4 - 20 - secondary ports (six ports altogether) */
 	for (idx = 0; idx < IDT_PORTCNT; idx++)
 		iface.init(CSR(ntx_base[idx], NTSDATA), NTSDATA_PORT0_PRI);
-
-	/* Get back default delays */
-	iface.init(CSR(SW_BASE, BASE_DELAY), DELAYS_CNT, defdelay);
 
 	/* Put control sum to the last frame */
 	iface.chksum();
