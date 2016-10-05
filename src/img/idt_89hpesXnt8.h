@@ -42,10 +42,10 @@
 #define NT20_BASE	((uint32_t)0x29000)
 #define SW_BASE		((uint32_t)0x3E000)
 
-/*! @def PCIELSTS
- *   IDT 89HPESxNT8 PCIe link status (NTx_BASE)
+/*! @def PCIELCTLSTS
+ *   IDT 89HPESxNT8 PCIe link control/status (NTx_BASE)
  */
-#define PCIELSTS	((uint32_t)0x00052)
+#define PCIELCTLSTS	((uint32_t)0x00050)
 
 /*! @def NTSDATA
  *   IDT 89HPESxNT8 NT-function data register (NTx_BASE)
@@ -178,14 +178,19 @@
 	 PxCLKMODE_GLOBAL(P16_19_CLKMODE_FLD) | \
 	 PxCLKMODE_GLOBAL(P20_23_CLKMODE_FLD))
 
-/*! @def PCIELSTS_SCK
- *   Field of the PCIELSTS PCIe-switch register
+/*! @def PCIELCTLSTS_CLK
+ *   Field of the PCIELCTLSTS PCIe-switch register
  *
  *  Set clock common/non-common mode of ports
  */
-#define PCIELSTS_SCK_FLD 12
-#define PCIELSTS_SCK_COM ((uint32_t)0x1 << PCIELSTS_SCK_FLD)
-#define PCIELSTS_SCK_NONCOM ((uint32_t)0x0 << PCIELSTS_SCK_FLD)
+#define PCIELCTL_CCLK_FLD 6
+#define PCIELCTL_CCLK_COM ((uint32_t)0x1 << PCIELCTL_CCLK_FLD)
+#define PCIELCTL_CCLK_NONCOM ((uint32_t)0x0 << PCIELCTL_CCLK_FLD)
+#define PCIELSTS_SCLK_FLD 28
+#define PCIELSTS_SCLK_COM ((uint32_t)0x1 << PCIELSTS_SCLK_FLD)
+#define PCIELSTS_SCLK_NONCOM ((uint32_t)0x0 << PCIELSTS_SCLK_FLD)
+#define PCIELCTLSTS_CLK_NONCOM \
+	(PCIELCTL_CCLK_NONCOM | PCIELSTS_SCLK_NONCOM)
 
 /*****************************************************************************/
 

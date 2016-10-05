@@ -95,7 +95,7 @@ void eeimg_cncbp(const char *fname)
 
 	/* Mark all ports as having non-common clock mode */
 	for (idx = 0; idx < IDT_PORTCNT; idx++)
-		iface.init(CSR(ntx_base[idx], PCIELSTS), PCIELSTS_SCK_NONCOM);
+		iface.init(CSR(ntx_base[idx], PCIELCTLSTS), PCIELCTLSTS_CLK_NONCOM);
 
 	/* Initialize the port partitions 0-6 and wait until the change is done, then
 	 * clear the status register */
