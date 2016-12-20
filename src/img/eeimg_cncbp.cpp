@@ -89,6 +89,11 @@ void eeimg_cncbp(const char *fname)
 	EEExtBlock iface(fname);
 	uint32_t idx;
 
+	/* Drop all delays to speed the load up */
+	for (idx = 0; idx < DELAYS_CNT; idx++) {
+		iface.init(CSR(SW_BASE, delays[idx]), nodelay[idx]);
+	}
+
 	/* Initialize the ports clocking mode so the Port 0 works in local clock-mode
 	 * and others have global clock */
 	iface.init(CSR(SW_BASE, PCLKMODE), PCLKMODE_INIT);
@@ -127,12 +132,36 @@ void eeimg_cncbp(const char *fname)
 	iface.init(CSR(SW_BASE, IOEXPADDR4), IOEXPADDR4_INIT);
 	iface.init(CSR(SW_BASE, IOEXPADDR5), IOEXPADDR5_INIT);
 
+	/* Enable the necessary BARs for all the NTB functions */
+	for (idx = 0; idx < IDT_PORTCNT; idx++) {
+		/* BAR0 - Memory mapped Configuration space - x32 Non-prefetchable
+		 * memory mapped space. Since it is the registers space then it must be
+		 * non-prefetchable, which permits the 32-bits address only according
+		 * to the PCI specs. Even though PCIe bridges doesn't do any prefetching
+		 * whether prefetch bit is set or not, We'll set the bit as a matter of
+		 * legacy */
+		iface.init(CSR(ntx_base[idx], BARSETUP0), BARSETUP_CFG_32BIT);
+		/* BAR2(+ x64:3) - Memory mapped shared memory with address translation
+		 * based on lookup table - x32/x64 Non-prefetchable/prefetchable memory
+		 * mapped space with aperture of 2^(mw_aprt + MWLUTBL_APRT), which
+		 * effectively gives 2^mw_aprt bytes of memory space per each memory
+		 * window */
+		iface.init(CSR(ntx_base[idx], BARSETUP2),
+				BARSETUP_24LUMW_64BIT | LUMW_1MB_APRT);
+	}
+
 	/* Setup NTSDATA register to declare just one Primary port and
-	 *  multiple Secondary ones:
+	 * multiple Secondary ones:
 	 *  Port 0 - Primary port,
 	 *  Port 4 - 20 - secondary ports (six ports altogether) */
 	for (idx = 0; idx < IDT_PORTCNT; idx++)
 		iface.init(CSR(ntx_base[idx], NTSDATA), NTSDATA_PORT0_PRI);
+
+	/* Restore the delays back */
+	for (idx = 0; idx < DELAYS_CNT; idx++) {
+		iface.init(CSR(SW_BASE, delays[idx]), defdelay[idx]);
+	}
+
 
 	/* Put control sum to the last frame */
 	iface.chksum();

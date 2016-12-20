@@ -52,6 +52,22 @@
  */
 #define NTSDATA		((uint32_t)0x0040C)
 
+/*! @def BARx
+ *   IDT 89HPESxNT8 BAR setup registers
+ */
+#define BARSETUP0	((uint32_t)0x00470)
+#define BARLIMIT0	((uint32_t)0x00474)
+#define BARSETUP1	((uint32_t)0x00480)
+#define BARLIMIT1	((uint32_t)0x00484)
+#define BARSETUP2	((uint32_t)0x00490)
+#define BARLIMIT2	((uint32_t)0x00494)
+#define BARSETUP3	((uint32_t)0x004A0)
+#define BARLIMIT3	((uint32_t)0x004A4)
+#define BARSETUP4	((uint32_t)0x004B0)
+#define BARLIMIT4	((uint32_t)0x004B4)
+#define BARSETUP5	((uint32_t)0x004C0)
+#define BARLIMIT5	((uint32_t)0x004C4)
+
 /*! @def PCLKMODE
  *   IDT 89HPESxNT8 clock mode (SW_BASE)
  */
@@ -291,6 +307,58 @@
 #define IOEXPADDR5_IOE20ADDR_FLD 1
 #define IOEXPADDR5_INIT \
 	    ((uint32_t)IOE20ADDR << IOEXPADDR5_IOE20ADDR_FLD)
+
+/*****************************************************************************/
+
+/*
+ * IDT PCIe-switch NTB function BAR setup parameters:
+ * @BARSETUP_CFG_32BIT:		32-bits addressable non-prefetchable memory
+ *							mapped registers configuration space
+ * @BARSETUP_CFG_64BIT:		64-bits addressable prefetchable memory
+ *							mapped registers configuration space
+ * @BARSETUP_DIRMW_32BIT:	32-bits addresable non-prefetchable direct
+ *							address translatable memory window
+ * @BARSETUP_DIRMW_64BIT:	64-bits addresable prefetchable direct
+ *							address translatable memory window
+ * @BARSETUP_12LUMW_32BIT:	32-bits addresable non-prefetchable 12-entries
+ *							lookup table memory window
+ * @BARSETUP_12LUMW_64BIT:	64-bits addresable prefetchable 12-entries
+ *							lookup table memory window
+ * @BARSETUP_24LUMW_32BIT:	32-bits addresable non-prefetchable 24-entries
+ *							lookup table memory window
+ * @BARSETUP_24LUMW_64BIT:	64-bits addresable prefetchable 24-entries
+ *							lookup table memory window
+ */
+#define BARSETUP_CFG_32BIT		((uint32_t)0x800004C0U)
+#define BARSETUP_CFG_64BIT		((uint32_t)0x800004CCU)
+#define BARSETUP_DIRMW_32BIT	((uint32_t)0x80000000U)
+#define BARSETUP_DIRMW_64BIT	((uint32_t)0x8000000CU)
+#define BARSETUP_12LUMW_32BIT	((uint32_t)0x80000800U)
+#define BARSETUP_12LUMW_64BIT	((uint32_t)0x8000080CU)
+#define BARSETUP_24LUMW_32BIT	((uint32_t)0x80001000U)
+#define BARSETUP_24LUMW_64BIT	((uint32_t)0x8000100CU)
+#define MWAPRT_OFF				4
+
+/*
+ * IDT PCIe-switch NTB function related parameters:
+ * @DEFAULT_MW_APRT:	Default aperture of the memory windows (that is
+ *						maximum size of the memory windows)
+ * @MIN_MW_APRT:		Minimum possible aperture of the memory windows
+ * @MAX_X86_MW_APRT:	Maximum aperture for x86 architecture
+ * @MAX_X64_MW_APRT:	Maximum aperture for x64 architecture
+ * @MWLUTBL_APRT:		Additional value to translate the per memory
+ *						windows specific aperture to the aperture of
+ *						the whole lookup table
+ * @LUMW_1MB_APRT:		BARx aperture to get 1Mb lookup table MWs
+ * @DIRMW_1MB_APRT:		BARx aperture to get 1Mb direct translated MWs
+ */
+#define DEFAULT_MW_APRT	(uint32_t)20
+#define MIN_MW_APRT		(uint32_t)9
+#define MAX_X86_MW_APRT	(uint32_t)26
+#define MAX_X64_MW_APRT	(uint32_t)32
+#define MWLUTBL_APRT	(uint32_t)5
+#define LUMW_1MB_APRT	((DEFAULT_MW_APRT + MWLUTBL_APRT) << MWAPRT_OFF)
+#define DIRMW_1MB_APRT	((DEFAULT_MW_APRT) << MWAPRT_OFF)
 
 /*****************************************************************************/
 
