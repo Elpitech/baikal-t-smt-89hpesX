@@ -280,8 +280,8 @@
  *  @IOE20ADDR - P0..P20 reset output, P0...P7 fundamental reset input
  */
 #define IOE17ADDR (uint8_t)0x74
-#define IOE18ADDR (uint8_t)0x75
-#define IOE19ADDR (uint8_t)0x76
+#define IOE18ADDR (uint8_t)0x76
+#define IOE19ADDR (uint8_t)0x75
 #define IOE20ADDR (uint8_t)0x77
 
 /*! @def IOEXPADDR4_*
