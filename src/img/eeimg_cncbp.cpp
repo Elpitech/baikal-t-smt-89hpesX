@@ -142,6 +142,9 @@ void eeimg_cncbp(const char *fname)
 
 	/* Enable the necessary BARs for all the NTB functions */
 	for (idx = 0; idx < IDT_PORTCNT; idx++) {
+		/* Skip port 2 since it has Downstream function enabled only */
+		if (idx == 1)
+			continue;
 		/* BAR0 - Memory mapped Configuration space - x32 Non-prefetchable
 		 * memory mapped space. Since it is the registers space then it must be
 		 * non-prefetchable, which permits the 32-bits address only according
@@ -175,4 +178,7 @@ void eeimg_cncbp(const char *fname)
 
 	/* Put control sum to the last frame */
 	iface.chksum();
+
+	/* Add sume empty blocks to make it loadable */
+	iface.empty(256);
 }
