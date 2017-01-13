@@ -23,6 +23,12 @@
 static const uint32_t ntx_base[IDT_PORTCNT] = {NT0_BASE,  NT2_BASE,  NT4_BASE,
 	NT6_BASE, NT8_BASE, NT12_BASE, NT16_BASE, NT20_BASE};
 
+/*! @var usx_base
+ *   Upstream function base addresses (USx_BASE)
+ */
+static const uint32_t usx_base[IDT_PORTCNT] = {US0_BASE,  US2_BASE,  US4_BASE,
+	US6_BASE, US8_BASE, US12_BASE, US16_BASE, US20_BASE};
+
 /*! @var delays
  *   IDT PCIe-switch boot delays
  */
@@ -99,8 +105,10 @@ void eeimg_cncbp(const char *fname)
 	iface.init(CSR(SW_BASE, PCLKMODE), PCLKMODE_INIT);
 
 	/* Mark all ports as having non-common clock mode */
-	for (idx = 0; idx < IDT_PORTCNT; idx++)
+	for (idx = 0; idx < IDT_PORTCNT; idx++) {
+		iface.init(CSR(usx_base[idx], PCIELCTLSTS), PCIELCTLSTS_CLK_NONCOM);
 		iface.init(CSR(ntx_base[idx], PCIELCTLSTS), PCIELCTLSTS_CLK_NONCOM);
+	}
 
 	/* Initialize the port partitions 0-6 and wait until the change is done, then
 	 * clear the status register */
@@ -162,6 +170,8 @@ void eeimg_cncbp(const char *fname)
 		iface.init(CSR(SW_BASE, delays[idx]), defdelay[idx]);
 	}
 
+	/* Initialize Temperature sensor values */
+	iface.init(CSR(SW_BASE, TMPCTL), TMPCTL_INIT);
 
 	/* Put control sum to the last frame */
 	iface.chksum();

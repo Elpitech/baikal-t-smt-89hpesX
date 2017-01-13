@@ -30,7 +30,7 @@
 #define IDT_PARTCNT		(8)
 
 /*! @def NTx_BASE
- *   NT base registers
+ *   NT registers base addresses
  */
 #define NT0_BASE	((uint32_t)0x01000)
 #define NT2_BASE	((uint32_t)0x05000)
@@ -40,6 +40,22 @@
 #define NT12_BASE	((uint32_t)0x19000)
 #define NT16_BASE	((uint32_t)0x21000)
 #define NT20_BASE	((uint32_t)0x29000)
+
+/*! @def USx_BASE
+ *   Upstream ports registers base addresses
+ */
+#define US0_BASE	((uint32_t)0x00000)
+#define US2_BASE	((uint32_t)0x04000)
+#define US4_BASE	((uint32_t)0x08000)
+#define US6_BASE	((uint32_t)0x0C000)
+#define US8_BASE	((uint32_t)0x10000)
+#define US12_BASE	((uint32_t)0x18000)
+#define US16_BASE	((uint32_t)0x20000)
+#define US20_BASE	((uint32_t)0x28000)
+
+/*! @def SW_BASE
+ *   Global registers base addresses
+ */
 #define SW_BASE		((uint32_t)0x3E000)
 
 /*! @def PCIELCTLSTS
@@ -132,6 +148,11 @@
 #define IOEXPADDR3		((uint32_t)0x011A4)
 #define IOEXPADDR4		((uint32_t)0x011A8)
 #define IOEXPADDR5		((uint32_t)0x011AC)
+
+/*! @def TMLCTL
+ *   Temperature sensor control register
+ */
+#define TMPCTL			((uint32_t)0x011D4)
 
 /*****************************************************************************/
 
@@ -369,6 +390,32 @@
  *  corresponding port. According to our specification it's going to be port 0.
  */
 #define NTSDATA_PORT0_PRI ((uint32_t)0)
+
+/*****************************************************************************/
+
+/*
+ * IDT PCIe-switch Temperature sensor control parameters:
+ * @TMPCTL_LVAL:	Low temperature threshold value
+ * @TMPCTL_HVAL:	High temperature threshold value
+ * @TMPCTL_LTH:		Low temperature threshold
+ * @TMPCTL_HTH:		High temperature threshold
+ * @TMPCTL_BLTH:	Below low temperature threshold interrupt enable
+ * @TMPCTL_AHTH:	Above high temperature threshold interrupt enable
+ * @TMPCTL_PDOWN:	Power down
+ */
+#define TMPCTL_LVAL			((uint32_t)10 << 1)
+#define TMPCTL_HVAL			((uint32_t)95 << 1)
+#define TMPCTL_LTH_FLD		0
+#define TMPCTL_HTH_FLD		8
+#define TMPCTL_BLTH_FLD		26
+#define TMPCTL_BLTH			((uint32_t)1 << TMPCTL_BLTH_FLD)
+#define TMPCTL_AHTH_FLD		29
+#define TMPCTL_AHTH			((uint32_t)1 << TMPCTL_AHTH_FLD)
+#define TMPCTL_PDOWN_FLD	31
+#define TMPCTL_PDOWN		((uint32_t)1 << TMPCTL_PDOWN_FLD)
+#define TMPCTL_INIT \
+	(TMPCTL_LVAL << TMPCTL_LTH_FLD | TMPCTL_HVAL << TMPCTL_HTH_FLD | \
+	 TMPCTL_BLTH | TMPCTL_AHTH | TMPCTL_PDOWN)
 
 #endif /* IDT_89HPESXNT8_H */
 
