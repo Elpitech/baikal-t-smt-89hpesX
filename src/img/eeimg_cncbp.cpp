@@ -179,6 +179,6 @@ void eeimg_cncbp(const char *fname)
 	/* Put control sum to the last frame */
 	iface.chksum();
 
-	/* Add sume empty blocks to make it loadable */
+	/* Add some empty blocks to make it loadable */
 	iface.empty(256);
 }

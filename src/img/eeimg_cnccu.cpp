@@ -36,4 +36,7 @@ void eeimg_cnccu(const char *fname)
 
 	/* Put control sum to the last frame */
 	iface.chksum();
+
+	/* Add some empty blocks to make it loadable */
+	iface.empty(256);
 }

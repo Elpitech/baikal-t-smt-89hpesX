@@ -70,7 +70,7 @@
  *
  *  @IOE4ADDR - P0..P4 link up/activity status
  */
-#define IOE4ADDR (uint8_t)0x70
+#define IOE4ADDR (uint8_t)0x74
 
 /*! @def IOEXPADDR1_*
  *   Fields of the IOEXPADDR4 PCIe-switch register

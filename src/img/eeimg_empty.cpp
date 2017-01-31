@@ -19,7 +19,7 @@
 /*! @def EMPTY_CNT
  *   Number of empty blocks
  */
-#define EMPTY_CNT ((uint16_t)256)
+#define EMPTY_CNT ((uint16_t)1024)
 
 /*! @fn void eeimg_empty(const char *fname)
  *   Write empty EEPROM image
