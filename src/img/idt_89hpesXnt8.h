@@ -139,6 +139,11 @@
 #define SWPORT20CTL		((uint32_t)0x00480)
 #define SWPORT20STS		((uint32_t)0x00484)
 
+/*! @def IOEXPINTF
+ *   IDT 89HPESxNT8 SMBus GPIO-expanders test register
+ */
+#define IOEXPINTF		((uint32_t)0x01194)
+
 /*! @def IOEXPADDR*
  *   IDT 89HPESxNT8 SMBus GPIO-expanders
  */
@@ -262,6 +267,7 @@
  */
 #define SWPORTxCTL_MODE_FLD 0
 #define SWPORTxCTL_PART_FLD 4
+#define SWPORTxCTL_OMA_FLD  16
 #define SWPORTxCTL_MODE_DIS  ((uint32_t)0x0 << SWPORTxCTL_MODE_FLD)
 #define SWPORTxCTL_MODE_DS ((uint32_t)0x1 << SWPORTxCTL_MODE_FLD)
 #define SWPORTxCTL_MODE_US ((uint32_t)0x2 << SWPORTxCTL_MODE_FLD)
@@ -270,12 +276,14 @@
 #define SWPORTxCTL_MODE_UNA ((uint32_t)0x5 << SWPORTxCTL_MODE_FLD)
 #define SWPORTxCTL_MODE_USD ((uint32_t)0x6 << SWPORTxCTL_MODE_FLD)
 #define SWPORTxCTL_MODE_NTD ((uint32_t)0x7 << SWPORTxCTL_MODE_FLD)
+#define SWPORTxCTL_OMA_RESET ((uint32_t)0x1 << SWPORTxCTL_OMA_FLD)
 
 /*! @def SWPORTxCTL_INIT
  *   Macros to init the PCIe-switch port MODE and PARTition
  */
 #define SWPORTxCTL_INIT(mode, part) \
-	    ((uint32_t)(mode) | ((uint32_t)(part) << SWPORTxCTL_PART_FLD))
+	    ((uint32_t)(mode) | ((uint32_t)(part) << SWPORTxCTL_PART_FLD) | \
+		 SWPORTxCTL_OMA_RESET)
 
 /*! @def SWPORTxSTS_OMCC/SWPORTxSTS_OMCI
  *   Fields of the SWPORTxCTL PCIe-switch register
@@ -291,6 +299,20 @@
 	    (SWPORTxSTS_OMCI | SWPORTxSTS_OMCC)
 
 /*****************************************************************************/
+
+/*! @def IOEXPINTF_*
+ *   Fields of the IOEXPINTF PCIe-switch register
+ *
+ *  Use the GPIO-expanders test register to workaround Errata #9
+ */
+#define IOEXPINTF_IOEDATA_FLD 0
+#define IOEXPINTF_IOEXTM_FLD  25
+#define IOEXPINTF_SELECT_FLD  26
+#define IOEXPINTF_IOEDATA_EXP20 ((uint32_t)0xFFFF << IOEXPINTF_IOEDATA_FLD)
+#define IOEXPINTF_IOEXTM ((uint32_t)1 << IOEXPINTF_IOEXTM_FLD)
+#define IOEXPINTF_SELECT_EXP20 ((uint32_t)0x14 << IOEXPINTF_SELECT_FLD)
+#define IOEXPINTF_INIT \
+	(IOEXPINTF_IOEDATA_EXP20 | IOEXPINTF_IOEXTM | IOEXPINTF_SELECT_EXP20)
 
 /*! @def IOExADDR
  *   PCIe-switch GPIO-expaners addresses

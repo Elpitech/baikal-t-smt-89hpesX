@@ -93,7 +93,7 @@ static const uint32_t swportpart[IDT_PORTCNT] = {0, 0, 1, 2, 3, 4, 5, 6};
 void eeimg_cncbp(const char *fname)
 {
 	EEExtBlock iface(fname);
-	uint32_t idx;
+	int idx;
 
 	/* Drop all delays to speed the load up */
 	for (idx = 0; idx < DELAYS_CNT; idx++) {
@@ -110,9 +110,14 @@ void eeimg_cncbp(const char *fname)
 		iface.init(CSR(ntx_base[idx], PCIELCTLSTS), PCIELCTLSTS_CLK_NONCOM);
 	}
 
+	/* Initialize the address of the link status/activity and reset GPIO-expanders
+	 * IOE17 -> 0x74, IOE18 -> 0x75, IOE19 -> 0x76, IOE20 -> 0x77 */
+	iface.init(CSR(SW_BASE, IOEXPADDR4), IOEXPADDR4_INIT);
+	iface.init(CSR(SW_BASE, IOEXPADDR5), IOEXPADDR5_INIT);
+
 	/* Initialize the port partitions 0-6 and wait until the change is done, then
 	 * clear the status register */
-	for (idx = 0; idx < 7; idx++) {
+	for (idx = 0; idx < (IDT_PARTCNT - 1); idx++) {
 		/* Enable partition with idx */
 		iface.init(CSR(SW_BASE, swpartctl[idx]), SWPARTxCTL_STATE_EN);
 		/* Wait for partition state is changed */
@@ -135,11 +140,6 @@ void eeimg_cncbp(const char *fname)
 		iface.init(CSR(SW_BASE, swportsts[idx]), SWPORTxSTS_OMCI_OMCC_CLEAR);
 	}
 
-	/* Initialize the address of the link status/activity and reset GPIO-expanders
-	 * IOE17 -> 0x74, IOE18 -> 0x75, IOE19 -> 0x76, IOE20 -> 0x77 */
-	iface.init(CSR(SW_BASE, IOEXPADDR4), IOEXPADDR4_INIT);
-	iface.init(CSR(SW_BASE, IOEXPADDR5), IOEXPADDR5_INIT);
-
 	/* Enable the necessary BARs for all the NTB functions */
 	for (idx = 0; idx < IDT_PORTCNT; idx++) {
 		/* Skip port 2 since it has Downstream function enabled only */
@@ -152,13 +152,24 @@ void eeimg_cncbp(const char *fname)
 		 * whether prefetch bit is set or not, We'll set the bit as a matter of
 		 * legacy */
 		iface.init(CSR(ntx_base[idx], BARSETUP0), BARSETUP_CFG_32BIT);
-		/* BAR2(+ x64:3) - Memory mapped shared memory with address translation
-		 * based on lookup table - x32/x64 Non-prefetchable/prefetchable memory
-		 * mapped space with aperture of 2^(mw_aprt + MWLUTBL_APRT), which
-		 * effectively gives 2^mw_aprt bytes of memory space per each memory
-		 * window */
+		/* BAR1 - Shared memory window with direct address translation - x32
+		 * Non-prefetchable memory mapped space with aperture of
+		 * 2^DIRMW_1MB_APRT, which effectively gives 1Mb of memory space per
+		 * each memory window */
+		iface.init(CSR(ntx_base[idx], BARSETUP1),
+				BARSETUP_DIRMW_32BIT | DIRMW_1MB_APRT);
+		/* BAR2 + BAR3 - Shared memory windows with address translation
+		 * based on lookup table - x64 Non-prefetchable memory mapped space
+		 * with aperture of 2^LUMW_1MB_APRT, which effectively gives 1Mb of
+		 * memory space per each memory window */
 		iface.init(CSR(ntx_base[idx], BARSETUP2),
 				BARSETUP_24LUMW_64BIT | LUMW_1MB_APRT);
+		/* BAR4 + BAR5 - Shared memory window with direct address translation -
+		 * x64 Non-prefetchable memory mapped space with aperture of
+		 * 2^DIRMW_1MB_APRT, which effectively gives 1Mb of memory space per
+		 * each memory window */
+		iface.init(CSR(ntx_base[idx], BARSETUP4),
+				BARSETUP_DIRMW_64BIT | DIRMW_1MB_APRT);
 	}
 
 	/* Setup NTSDATA register to declare just one Primary port and
@@ -175,6 +186,9 @@ void eeimg_cncbp(const char *fname)
 
 	/* Initialize Temperature sensor values */
 	iface.init(CSR(SW_BASE, TMPCTL), TMPCTL_INIT);
+
+	/* Enable all reset pins of Expander #20 to workaround the Errata #19 */
+	iface.init(CSR(SW_BASE, IOEXPINTF), IOEXPINTF_INIT);
 
 	/* Put control sum to the last frame */
 	iface.chksum();
