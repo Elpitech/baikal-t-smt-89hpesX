@@ -35,6 +35,11 @@
 #define P2_BASE	((uint32_t)0x2000)
 #define P4_BASE	((uint32_t)0x4000)
 
+/*! @def SWCTL
+ *   IDT 89HPESxT3 Switch control register (P0_BASE)
+ */
+#define SWCTL			((uint32_t)0x0404)
+
 /*! @def GPIO*
  *   IDT 89HPESxT3 GPIO* related registers (P0_BASE)
  */
@@ -47,6 +52,20 @@
  */
 #define IOEXPADDR0		((uint32_t)0x0434)
 #define IOEXPADDR1		((uint32_t)0x0438)
+
+/*****************************************************************************/
+
+/*! @def SWCTL
+ *   Fields of the SWCTL PCIe-switch register
+ */
+#define SWCTL_DDDNC_FLD		9
+#define SWCTL_DDDNC_ALL		((uint32_t)0x0 << SWCTL_DDDNC_FLD)
+#define SWCTL_DDDNC_CFG		((uint32_t)0x1 << SWCTL_DDDNC_FLD)
+#define SWCTL_DDDNC_NON		((uint32_t)0x2 << SWCTL_DDDNC_FLD)
+#define SWCTL_R64BAB4GB_FLD	13
+#define SWCTL_R64BAB4GB		((uint32_t)1 << SWCTL_R64BAB4GB_FLD)
+#define SWCTL_INIT \
+	(SWCTL_DDDNC_NON | SWCTL_R64BAB4GB)
 
 /*****************************************************************************/
 

@@ -34,6 +34,9 @@ void eeimg_cnccu(const char *fname)
 	/* Initialize IOEXPADDR1 register with SMBus GPIO-expander address */
 	iface.init(CSR(P0_BASE, IOEXPADDR1), IOEXPADDR1_INIT);
 
+	/* Set SWCTL register to disable Downstream Device Number Checking */
+	iface.init(CSR(P0_BASE, SWCTL), SWCTL_INIT);
+
 	/* Put control sum to the last frame */
 	iface.chksum();
 

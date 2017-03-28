@@ -355,31 +355,31 @@
 
 /*
  * IDT PCIe-switch NTB function BAR setup parameters:
- * @BARSETUP_CFG_32BIT:		32-bits addressable non-prefetchable memory
+ * @BARSETUP_CFG_32BIT:		32-bits BAR0 mapping non-prefetchable memory
  *							mapped registers configuration space
- * @BARSETUP_CFG_64BIT:		64-bits addressable prefetchable memory
+ * @BARSETUP_CFG_64BIT:		64-bits BAR{0,1} mapping prefetchable memory
  *							mapped registers configuration space
- * @BARSETUP_DIRMW_32BIT:	32-bits addresable non-prefetchable direct
+ * @BARSETUP_DIRMW_32BIT:	32-bits BARx mapping prefetchable direct
  *							address translatable memory window
- * @BARSETUP_DIRMW_64BIT:	64-bits addresable prefetchable direct
+ * @BARSETUP_DIRMW_64BIT:	64-bits BARx mapping prefetchable direct
  *							address translatable memory window
- * @BARSETUP_12LUMW_32BIT:	32-bits addresable non-prefetchable 12-entries
+ * @BARSETUP_12LUMW_32BIT:	32-bits BARx mapping prefetchable 12-entries
  *							lookup table memory window
- * @BARSETUP_12LUMW_64BIT:	64-bits addresable prefetchable 12-entries
+ * @BARSETUP_12LUMW_64BIT:	64-bits BARx mapping prefetchable 12-entries
  *							lookup table memory window
- * @BARSETUP_24LUMW_32BIT:	32-bits addresable non-prefetchable 24-entries
+ * @BARSETUP_24LUMW_32BIT:	32-bits BARx mapping prefetchable 24-entries
  *							lookup table memory window
- * @BARSETUP_24LUMW_64BIT:	64-bits addresable prefetchable 24-entries
+ * @BARSETUP_24LUMW_64BIT:	64-bits BARx mapping prefetchable 24-entries
  *							lookup table memory window
  */
 #define BARSETUP_CFG_32BIT		((uint32_t)0x800004C0U)
-#define BARSETUP_CFG_64BIT		((uint32_t)0x800004C4U)
-#define BARSETUP_DIRMW_32BIT	((uint32_t)0x80000000U)
-#define BARSETUP_DIRMW_64BIT	((uint32_t)0x80000004U)
-#define BARSETUP_12LUMW_32BIT	((uint32_t)0x80000800U)
-#define BARSETUP_12LUMW_64BIT	((uint32_t)0x80000804U)
-#define BARSETUP_24LUMW_32BIT	((uint32_t)0x80001000U)
-#define BARSETUP_24LUMW_64BIT	((uint32_t)0x80001004U)
+#define BARSETUP_CFG_64BIT		((uint32_t)0x800004CCU)
+#define BARSETUP_DIRMW_32BIT	((uint32_t)0x80000008U)
+#define BARSETUP_DIRMW_64BIT	((uint32_t)0x8000000CU)
+#define BARSETUP_12LUMW_32BIT	((uint32_t)0x80000808U)
+#define BARSETUP_12LUMW_64BIT	((uint32_t)0x8000080CU)
+#define BARSETUP_24LUMW_32BIT	((uint32_t)0x80001008U)
+#define BARSETUP_24LUMW_64BIT	((uint32_t)0x8000100CU)
 #define MWAPRT_OFF				4
 
 /*
