@@ -34,8 +34,14 @@ void eeimg_cnccu(const char *fname)
 	/* Initialize IOEXPADDR1 register with SMBus GPIO-expander address */
 	iface.init(CSR(P0_BASE, IOEXPADDR1), IOEXPADDR1_INIT);
 
+	/* Set PCIELCTL to send additional TS2s (errata #13) */
+	//iface.init(CSR(P0_BASE, PCIELCTL), PCIELCTL_INIT);
+
 	/* Set SWCTL register to disable Downstream Device Number Checking */
 	iface.init(CSR(P0_BASE, SWCTL), SWCTL_INIT);
+
+	/* Set PHYLSTATE0 to initiate Full Link Retrain (errata #7) */
+	//iface.init(CSR(P0_BASE, PHYLSTATE0), PHYLSTATE0_INIT);
 
 	/* Put control sum to the last frame */
 	iface.chksum();

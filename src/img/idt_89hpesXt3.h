@@ -35,6 +35,11 @@
 #define P2_BASE	((uint32_t)0x2000)
 #define P4_BASE	((uint32_t)0x4000)
 
+/*! @def PCIELCTL
+ *   IDT 89HPESxT3 Switch link control register (P0_BASE)
+ */
+#define PCIELCTL		((uint32_t)0x0050)
+
 /*! @def SWCTL
  *   IDT 89HPESxT3 Switch control register (P0_BASE)
  */
@@ -52,6 +57,21 @@
  */
 #define IOEXPADDR0		((uint32_t)0x0434)
 #define IOEXPADDR1		((uint32_t)0x0438)
+
+/*! @def PHYLSTATE0
+ *   IDT 89HPESxT3 PHY link state register
+ */
+#define PHYLSTATE0		((uint32_t)0x0534)
+
+/*****************************************************************************/
+
+/*! @def PCIELCTL
+ *   Fields of the PCIELCTL PCIe-switch register
+ */
+#define PCIELCTL_ESYNC_FLD	7
+#define PCIELCTL_ESYNC		((uint32_t)1 << PCIELCTL_ESYNC_FLD)
+#define PCIELCTL_INIT \
+	(PCIELCTL_ESYNC)
 
 /*****************************************************************************/
 
@@ -100,6 +120,16 @@
 #define IOEXPADDR1_IOE4ADDR_FLD 1
 #define IOEXPADDR1_INIT \
 	    ((uint32_t)IOE4ADDR << IOEXPADDR1_IOE4ADDR_FLD)
+
+/*****************************************************************************/
+
+/*! @def PHYLSTATE0
+ *   Fields of the PHYLSTATE0 PCIe-switch register
+ */
+#define PHYLSTATE0_FLRET_FLD	31
+#define PHYLSTATE0_FLRET		((uint32_t)1 << PHYLSTATE0_FLRET_FLD)
+#define PHYLSTATE0_INIT \
+	(PHYLSTATE0_FLRET)
 
 #endif /* IDT_89HPESXT3_H */
 
