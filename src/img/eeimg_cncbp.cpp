@@ -84,6 +84,11 @@ static const uint32_t swportmode[IDT_PORTCNT] = {SWPORTxCTL_MODE_USNT,
  */
 static const uint32_t swportpart[IDT_PORTCNT] = {0, 0, 1, 2, 3, 4, 5, 6};
 
+/*! @var swport
+ *   IDT PCIe-switch port device numnber
+ */
+static const uint32_t swportdevnum[IDT_PORTCNT] = {0, 2, 0, 0, 0, 0, 0, 0};
+
 /*! @fn void eeimg_cncbp(const char *fname)
  *   Write CNC BP EEPROM image
  *
@@ -131,9 +136,10 @@ void eeimg_cncbp(const char *fname)
 	 * Ports 4 - 20 (NT) respectively belong to the partitions 1 - 6
 	 * Then clear the status register */
 	for (idx = 0; idx < IDT_PORTCNT; idx++) {
-		/* Initialize port mode (US, DS or NT) and partition it belongs to */
+		/* Initialize port mode (US, DS or NT), device number and partition it
+		 * belongs to */
 		iface.init(CSR(SW_BASE, swportctl[idx]),
-				SWPORTxCTL_INIT(swportmode[idx], swportpart[idx]));
+				SWPORTxCTL_INIT(swportmode[idx], swportdevnum[idx], swportpart[idx]));
 		/* Wait until the chages are made */
 		iface.wait(CSR(SW_BASE, swportsts[idx]), SWPORTxSTS_OMCC, SWPORTxSTS_OMCC_UNMSK);
 		/* Clear the status register */
@@ -178,6 +184,9 @@ void eeimg_cncbp(const char *fname)
 	 *  Port 4 - 20 - secondary ports (six ports altogether) */
 	for (idx = 0; idx < IDT_PORTCNT; idx++)
 		iface.init(CSR(ntx_base[idx], NTSDATA), NTSDATA_PORT0_PRI);
+
+	/* Set ACS capability for Upstream port (errata #8 - for PCIe standard) */
+	//iface.init(US0_BASE, ACSCAP), ACSCAP_INIT);
 
 	/* Restore the delays back */
 	for (idx = 0; idx < DELAYS_CNT; idx++) {

@@ -63,6 +63,11 @@
  */
 #define PCIELCTLSTS	((uint32_t)0x00050)
 
+/*! @def ACSCAP
+ *   IDT 89HPESxNT8 PCIe ACS capability register (USx_BASE)
+ */
+#define ACSCAP		((uint32_t)0x00324)
+
 /*! @def NTSDATA
  *   IDT 89HPESxNT8 NT-function data register (NTx_BASE)
  */
@@ -191,6 +196,22 @@
 
 /*****************************************************************************/
 
+/*! @def ACSCAP_*
+ *   Field of the ACSCAP PCIe-switch register
+ *
+ *  Set/unset corresponding modes of ACS
+ */
+#define ACSCAP_R_FLD 2
+#define ACSCAP_C_FLD 3
+#define ACSCAP_T_FLD 6
+#define ACSCAP_R ((uint32_t)1 << ACSCAP_R_FLD)
+#define ACSCAP_C ((uint32_t)1 << ACSCAP_C_FLD)
+#define ACSCAP_T ((uint32_t)1 << ACSCAP_T_FLD)
+#define ACSCAP_INIT \
+	(~ACSCAP_R & ~ACSCAP_C & ~ACSCAP_T)
+
+/*****************************************************************************/
+
 /*! @def Px_CLKMODE_*
  *   Fields of the PCLKMODE PCIe-switch register
  *
@@ -267,6 +288,7 @@
  */
 #define SWPORTxCTL_MODE_FLD 0
 #define SWPORTxCTL_PART_FLD 4
+#define SWPORTxCTL_DNUM_FLD 10
 #define SWPORTxCTL_OMA_FLD  16
 #define SWPORTxCTL_MODE_DIS  ((uint32_t)0x0 << SWPORTxCTL_MODE_FLD)
 #define SWPORTxCTL_MODE_DS ((uint32_t)0x1 << SWPORTxCTL_MODE_FLD)
@@ -281,9 +303,9 @@
 /*! @def SWPORTxCTL_INIT
  *   Macros to init the PCIe-switch port MODE and PARTition
  */
-#define SWPORTxCTL_INIT(mode, part) \
-	    ((uint32_t)(mode) | ((uint32_t)(part) << SWPORTxCTL_PART_FLD) | \
-		 SWPORTxCTL_OMA_RESET)
+#define SWPORTxCTL_INIT(mode, dnum, part) \
+	    ((uint32_t)(mode) | ((uint32_t)(dnum) << SWPORTxCTL_DNUM_FLD) | \
+		 ((uint32_t)(part) << SWPORTxCTL_PART_FLD) | SWPORTxCTL_OMA_RESET)
 
 /*! @def SWPORTxSTS_OMCC/SWPORTxSTS_OMCI
  *   Fields of the SWPORTxCTL PCIe-switch register
