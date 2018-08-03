@@ -439,27 +439,12 @@
 
 /*
  * IDT PCIe-switch Temperature sensor control parameters:
- * @TMPCTL_LVAL:	Low temperature threshold value
- * @TMPCTL_HVAL:	High temperature threshold value
- * @TMPCTL_LTH:		Low temperature threshold
- * @TMPCTL_HTH:		High temperature threshold
- * @TMPCTL_BLTH:	Below low temperature threshold interrupt enable
- * @TMPCTL_AHTH:	Above high temperature threshold interrupt enable
  * @TMPCTL_PDOWN:	Power down
  */
-#define TMPCTL_LVAL			((uint32_t)10 << 1)
-#define TMPCTL_HVAL			((uint32_t)95 << 1)
-#define TMPCTL_LTH_FLD		0
-#define TMPCTL_HTH_FLD		8
-#define TMPCTL_BLTH_FLD		26
-#define TMPCTL_BLTH			((uint32_t)1 << TMPCTL_BLTH_FLD)
-#define TMPCTL_AHTH_FLD		29
-#define TMPCTL_AHTH			((uint32_t)1 << TMPCTL_AHTH_FLD)
 #define TMPCTL_PDOWN_FLD	31
 #define TMPCTL_PDOWN		((uint32_t)0 << TMPCTL_PDOWN_FLD)
 #define TMPCTL_INIT \
-	(TMPCTL_LVAL << TMPCTL_LTH_FLD | TMPCTL_HVAL << TMPCTL_HTH_FLD | \
-	 TMPCTL_BLTH | TMPCTL_AHTH | TMPCTL_PDOWN)
+		TMPCTL_PDOWN
 
 #endif /* IDT_89HPESXNT8_H */
 
