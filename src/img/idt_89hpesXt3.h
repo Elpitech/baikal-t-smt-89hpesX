@@ -36,7 +36,12 @@
 #define P4_BASE	((uint32_t)0x4000)
 
 /*! @def PCIELCTL
- *   IDT 89HPESxT3 Switch link control register (P0_BASE)
+ *   IDT 89HPESxT3 Switch link capability
+ */
+#define PCIELCAP		((uint32_t)0x004C)
+
+/*! @def PCIELCTL
+ *   IDT 89HPESxT3 Switch link control register
  */
 #define PCIELCTL		((uint32_t)0x0050)
 
@@ -62,6 +67,25 @@
  *   IDT 89HPESxT3 PHY link state register
  */
 #define PHYLSTATE0		((uint32_t)0x0534)
+
+/*****************************************************************************/
+
+/*! @def PCIELCAP
+ *   Fields of the PCIELCAP PCIe-switch register
+ */
+#define PCIELCAP_MAXLNKWDTH_FLD	4
+#define PCIELCAP_MAXLNKWDTH		((uint32_t)0x4 << PCIELCAP_MAXLNKWDTH_FLD)
+#define PCIELCAP_L0SEL_FLD		12
+#define PCIELCAP_L0SEL			((uint32_t)0x5 << PCIELCAP_L0SEL_FLD)
+#define PCIELCAP_L1EL_FLD		15
+#define PCIELCAP_L1EL			((uint32_t)0x2 << PCIELCAP_L1EL_FLD)
+#define PCIELCAP_SDERR_DLLLA_LBN_FLD		19
+#define PCIELCAP_SDERR_DLLLA_LBN_DS			((uint32_t)0x7 << PCIELCAP_SDERR_DLLLA_LBN_FLD)
+#define PCIELCAP_INIT_US \
+	(PCIELCAP_MAXLNKWDTH | PCIELCAP_L0SEL | PCIELCAP_L1EL)
+#define PCIELCAP_INIT_DS \
+	(PCIELCAP_MAXLNKWDTH | PCIELCAP_L0SEL | PCIELCAP_L1EL | \
+	 PCIELCAP_SDERR_DLLLA_LBN_DS)
 
 /*****************************************************************************/
 
