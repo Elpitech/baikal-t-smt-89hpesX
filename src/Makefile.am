@@ -10,8 +10,8 @@
 
 EXTRA_DIST = 
 
-bin_PROGRAMS = eefw
-eefw_SOURCES = \
+bin_PROGRAMS = smt-89hpesX
+smt_89hpesX_SOURCES = \
 	main.cpp helpers.h \
 	EEException.h EEAlloc.h \
 	EEBase.cpp EEBase.h EEBasicBlock.cpp EEBasicBlock.h EEExtBlock.cpp EEExtBlock.h \
