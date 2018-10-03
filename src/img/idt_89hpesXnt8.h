@@ -68,6 +68,11 @@
  */
 #define ACSCAP		((uint32_t)0x00324)
 
+/*! @def SERDESCFG
+ *   IDT 89HPESxNT8 PCe-port SerDes Configuration (USx_BASE)
+ */
+#define SERDESCFG	((uint32_t)0x00510)
+
 /*! @def NTSDATA
  *   IDT 89HPESxNT8 NT-function data register (NTx_BASE)
  */
@@ -143,6 +148,18 @@
 #define SWPORT16STS		((uint32_t)0x00404)
 #define SWPORT20CTL		((uint32_t)0x00480)
 #define SWPORT20STS		((uint32_t)0x00484)
+
+/*! @def SxTXLCTL1
+ *   IDT 89HPESxNT8 SerDes x Tramitter Lane Control 1 on (SW_BASE)
+ */
+#define S0TXLCTL1		((uint32_t)0x01008)
+#define S1TXLCTL1		((uint32_t)0x01028)
+#define S2TXLCTL1		((uint32_t)0x01048)
+#define S3TXLCTL1		((uint32_t)0x01068)
+#define S4TXLCTL1		((uint32_t)0x01088)
+#define S5TXLCTL1		((uint32_t)0x010A8)
+#define S6TXLCTL1		((uint32_t)0x010C8)
+#define S7TXLCTL1		((uint32_t)0x010E8)
 
 /*! @def IOEXPINTF
  *   IDT 89HPESxNT8 SMBus GPIO-expanders test register
@@ -257,6 +274,17 @@
 
 /*****************************************************************************/
 
+/*! @def SERDESCFG_LSE
+ *   Fields of the SERDESCFG PCIe-switch register
+ *
+ *  Disbale/Enable Low-Swing configs
+ */
+#define SERDESCFG_LSE_FLD 16
+#define SERDESCFG_LSE_EN ((uint32_t)0x1 << SERDESCFG_LSE_FLD)
+#define SERDESCFG_LSE_DIS ((uint32_t)0x0 << SERDESCFG_LSE_FLD)
+
+/*****************************************************************************/
+
 /*! @def SWPARTxCTL_STATE_*
  *   Field of the SWPARTxCTL PCIe-switch register
  *
@@ -319,6 +347,37 @@
 #define SWPORTxSTS_OMCC_UNMSK (~SWPORTxSTS_OMCC)
 #define SWPORTxSTS_OMCI_OMCC_CLEAR \
 	    (SWPORTxSTS_OMCI | SWPORTxSTS_OMCC)
+
+/*****************************************************************************/
+
+/*! @def SxTXCTL1
+ *   Fields of the SxTXCTL1 PCIe-switch register
+ *
+ *  Set SerDes x Transmitter Lane Control 1 settings
+ */
+#define SxTXCTL1_TDVL_FS3DBG1_FLD	0
+#define SxTXCTL1_CDC_FS3DBG1_FLD	5
+#define SxTXCTL1_TDVL_FS3DBG2_FLD	8
+#define SxTXCTL1_CDC_FS3DBG2_FLD	13
+#define SxTXCTL1_TDVL_FS6DBG2_FLD	16
+#define SxTXCTL1_CDC_FS6DBG2_FLD	21
+#define SxTXCTL1_TDVL_LSG1_FLD		24
+#define SxTXCTL1_TDVL_LSG2_FLD		28
+#define SxTXCTL1_TDVL_FS3DBG1		((uint32_t)0x12 << SxTXCTL1_TDVL_FS3DBG1_FLD)
+#define SxTXCTL1_CDC_FS3DBG1		((uint32_t)0x3 << SxTXCTL1_CDC_FS3DBG1_FLD)
+#define SxTXCTL1_TDVL_FS3DBG2		((uint32_t)0x18 << SxTXCTL1_TDVL_FS3DBG2_FLD)
+#define SxTXCTL1_CDC_FS3DBG2		((uint32_t)0x3 << SxTXCTL1_CDC_FS3DBG2_FLD)
+#define SxTXCTL1_TDVL_FS6DBG2		((uint32_t)0x15 << SxTXCTL1_TDVL_FS6DBG2_FLD)
+#define SxTXCTL1_CDC_FS6DBG2		((uint32_t)0x6 << SxTXCTL1_CDC_FS6DBG2_FLD)
+#define SxTXCTL1_TDVL_LSG1			((uint32_t)0xA << SxTXCTL1_TDVL_LSG1_FLD)
+#define SxTXCTL1_TDVL_LSG2			((uint32_t)0xC << SxTXCTL1_TDVL_LSG2_FLD)
+//#define SxTXCTL1_TDVL_LSG1			((uint32_t)0x3 << SxTXCTL1_TDVL_LSG1_FLD)
+//#define SxTXCTL1_TDVL_LSG2			((uint32_t)0x4 << SxTXCTL1_TDVL_LSG2_FLD)
+#define SxTXCTL1_INIT \
+	(SxTXCTL1_TDVL_FS3DBG1 | SxTXCTL1_CDC_FS3DBG1 | \
+	 SxTXCTL1_TDVL_FS3DBG2 | SxTXCTL1_CDC_FS3DBG2 | \
+	 SxTXCTL1_TDVL_FS6DBG2 | SxTXCTL1_CDC_FS6DBG2 | \
+	 SxTXCTL1_TDVL_LSG1 | SxTXCTL1_TDVL_LSG2)
 
 /*****************************************************************************/
 
