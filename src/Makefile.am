@@ -17,6 +17,6 @@ smt_89hpesX_SOURCES = \
 	EEBase.cpp EEBase.h EEBasicBlock.cpp EEBasicBlock.h EEExtBlock.cpp EEExtBlock.h \
 	img/eeimg.cpp img/eeimg.h \
 	img/eeimg_cnccu.cpp img/idt_89hpesXt3.h img/eeimg_cncbp.cpp img/idt_89hpesXnt8.h \
-	img/eeimg_cncbp_lse.cpp img/eeimg_cncbp_p4ds.cpp img/eeimg_cncbp_nts.cpp \
+	img/eeimg_cncbp_p4ds.cpp img/eeimg_cncbp_nts.cpp \
 	img/eeimg_empty.cpp
 
