@@ -30,7 +30,7 @@ static void eefw_usage(const char *progname) {
 		"Print EEPROM <image> either to a <file> or to stdout" << std::endl <<
 		std::endl <<
 		"Options:" << std::endl <<
-		"  -i <image> - image being generated: cnccu, cncbp, cncbp_p4ds, cncbp_nts, empty" << std::endl <<
+		"  -i <image> - image being generated: cnccu, cncbp, empty" << std::endl <<
 		"  -l         - low-swing SerDes mode (makes sense for cncbp image only)" << std::endl <<
 		"  -d <ports> - comma-separated dowstream ports (cncbp specific subset of 4,6,8,12,16,20)" << std::endl <<
 		"  -o <file>  - file name to print image to (stdout used by default)" <<

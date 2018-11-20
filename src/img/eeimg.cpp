@@ -28,16 +28,6 @@ extern void eeimg_cnccu(struct eeparams *params);
  */
 extern void eeimg_cncbp(struct eeparams *params);
 
-/*! @fn void eeimg_cncbp_p4ds(const char *fname)
- *   Wrapper method creating CNC BP IDT EEPROM firmware with Downstream Port 4
- */
-extern void eeimg_cncbp_p4ds(struct eeparams *params);
-
-/*! @fn void eeimg_cncbp_nts(const char *fname)
- *   Wrapper method creating CNC BP IDT EEPROM firmware with all NTB ports
- */
-extern void eeimg_cncbp_nts(struct eeparams *params);
-
 /*! @fn void eeimg_empty(const char *fname)
  *   Wrapper method creating empty EEPROM firmware
  */
@@ -57,8 +47,6 @@ struct eeimg_desc {
 static struct eeimg_desc eeimgs[] = {
 	{"cnccu", eeimg_cnccu},
 	{"cncbp", eeimg_cncbp},
-	{"cncbp_p4ds", eeimg_cncbp_p4ds},
-	{"cncbp_nts", eeimg_cncbp_nts},
 	{"empty", eeimg_empty}
 };
 
