@@ -72,6 +72,12 @@ static const uint32_t swportctl[IDT_PORTCNT] = {SWPORT0CTL, SWPORT2CTL,
 static const uint32_t swportsts[IDT_PORTCNT] = {SWPORT0STS, SWPORT2STS,
 	SWPORT4STS, SWPORT6STS, SWPORT8STS, SWPORT12STS, SWPORT16STS, SWPORT20STS};
 
+/*! @var sxtxlctl
+ *   IDT PCIe-switch ports SerDes control 1 registers (SW_BASE)
+ */
+static const uint32_t sXtxlctl[IDT_PORTCNT] = {S0TXLCTL1, S1TXLCTL1,
+	S2TXLCTL1, S3TXLCTL1, S4TXLCTL1, S5TXLCTL1, S6TXLCTL1, S7TXLCTL1};
+
 /*! @var swportmode
  *   IDT PCIe-switch port modes
  */
@@ -188,6 +194,16 @@ void eeimg_cncbp(struct eeparams *params)
 
 	/* Set ACS capability for Upstream port (errata #8 - for PCIe standard) */
 	//iface.init(US0_BASE, ACSCAP), ACSCAP_INIT);
+
+	if (params->lse) {
+		/* Initialize SerDes low-swing mode with Tx driver voltage levels */
+		for (idx = 0; idx < IDT_PORTCNT; idx++) {
+			/* Enable low-swing mode */
+			iface.init(CSR(usx_base[idx], SERDESCFG), SERDESCFG_LSE_EN);
+			/* Make sure the level is big-enough */
+			iface.init(CSR(SW_BASE, sXtxlctl[idx]), SxTXCTL1_INIT);
+		}
+	}
 
 	/* Restore the delays back */
 	for (idx = 0; idx < DELAYS_CNT; idx++) {

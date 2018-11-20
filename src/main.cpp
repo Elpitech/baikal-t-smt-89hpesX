@@ -26,7 +26,7 @@
  */
 static void eefw_usage(const char *progname) {
 	std::cout << "Usage:" << std::endl <<
-		"  " << progname << " -i <image> [-o <file>]" << std::endl <<
+		"  " << progname << " -i <image> [-l -o <file>]" << std::endl <<
 		"Print EEPROM <image> either to a <file> or to stdout" << std::endl <<
 		std::endl <<
 		"Options:" << std::endl <<
