@@ -176,13 +176,6 @@ void eeimg_cncbp_nts(struct eeparams *params)
 				BARSETUP_DIRMW_64BIT | DIRMW_1MB_APRT);
 	}
 
-	/* Setup NTSDATA register to declare just one Primary port and
-	 * multiple Secondary ones:
-	 *  Port 0 - Primary port,
-	 *  Port 4 - 20 - secondary ports (six ports altogether) */
-	for (idx = 0; idx < IDT_PORTCNT; idx++)
-		iface.init(CSR(ntx_base[idx], NTSDATA), NTSDATA_PORT0_PRI);
-
 	/* Set ACS capability for Upstream port (errata #8 - for PCIe standard) */
 	//iface.init(US0_BASE, ACSCAP), ACSCAP_INIT);
 

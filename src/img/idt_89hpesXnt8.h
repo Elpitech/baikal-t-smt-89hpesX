@@ -487,16 +487,6 @@
 
 /*****************************************************************************/
 
-/*! @def NTSDATA
- *   NT-function private datae register
- *
- *  NTSDATA is predefined with the port number, which is primary for the
- *  corresponding port. According to our specification it's going to be port 0.
- */
-#define NTSDATA_PORT0_PRI ((uint32_t)0)
-
-/*****************************************************************************/
-
 /*
  * IDT PCIe-switch Temperature sensor control parameters:
  * @TMPCTL_PDOWN:	Power down
