@@ -16,6 +16,7 @@
 #include <stdint.h>
 #include "EEBasicBlock.h"
 #include "img/idt_89hpesXt3.h"
+#include "img/eeimg.h"
 
 /*! @var portx_base
  *   PCIe-switch port registers base addresses (Px_BASE)
@@ -25,12 +26,12 @@ static const uint32_t portx_base[IDT_PORTCNT] = {P0_BASE,  P2_BASE,  P4_BASE};
 /*! @fn void eeimg_cnccu(const char *fname)
  *   Write CNC CU EEPROM image
  *
- *  @param fname file name to write firmware to
+ *  @param params output image paramters
  *  @exception EEEXception
  */
-void eeimg_cnccu(const char *fname)
+void eeimg_cnccu(struct eeparams *params)
 {
-	EEBasicBlock iface(fname);
+	EEBasicBlock iface(params->fname);
 	int idx;
 
 	/* Initialize GPIOFUNC register to select alternative functions of

@@ -15,6 +15,7 @@
 
 #include <stdint.h>
 #include "EEBasicBlock.h"
+#include "img/eeimg.h"
 
 /*! @def EMPTY_CNT
  *   Number of empty blocks
@@ -24,12 +25,12 @@
 /*! @fn void eeimg_empty(const char *fname)
  *   Write empty EEPROM image
  *
- *  @param fname file name to write firmware to
+ *  @param params output image paramters
  *  @exception EEEXception
  */
-void eeimg_empty(const char *fname)
+void eeimg_empty(struct eeparams *params)
 {
-	EEBasicBlock iface(fname);
+	EEBasicBlock iface(params->fname);
 
 	/* Just output EMPTY_CNT empty blocks */
 	iface.empty(EMPTY_CNT);

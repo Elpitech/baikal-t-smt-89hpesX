@@ -16,42 +16,44 @@
 #include <string.h>
 #include "EEException.h"
 
+#include "img/eeimg.h"
+
 /*! @fn void eeimg_cnccu(const char *fname)
  *   Wrapper method creating CNC CU IDT EEPROM firmware
  */
-extern void eeimg_cnccu(const char *fname);
+extern void eeimg_cnccu(struct eeparams *params);
 
 /*! @fn void eeimg_cncbp(const char *fname)
  *   Wrapper method creating CNC BP IDT EEPROM firmware
  */
-extern void eeimg_cncbp(const char *fname);
+extern void eeimg_cncbp(struct eeparams *params);
 
 /*! @fn void eeimg_cncbp_lse(const char *fname)
  *   Wrapper method creating CNC BP IDT EEPROM firmware with LSE optimisation
  */
-extern void eeimg_cncbp_lse(const char *fname);
+extern void eeimg_cncbp_lse(struct eeparams *params);
 
 /*! @fn void eeimg_cncbp_p4ds(const char *fname)
  *   Wrapper method creating CNC BP IDT EEPROM firmware with Downstream Port 4
  */
-extern void eeimg_cncbp_p4ds(const char *fname);
+extern void eeimg_cncbp_p4ds(struct eeparams *params);
 
 /*! @fn void eeimg_cncbp_nts(const char *fname)
  *   Wrapper method creating CNC BP IDT EEPROM firmware with all NTB ports
  */
-extern void eeimg_cncbp_nts(const char *fname);
+extern void eeimg_cncbp_nts(struct eeparams *params);
 
 /*! @fn void eeimg_empty(const char *fname)
  *   Wrapper method creating empty EEPROM firmware
  */
-extern void eeimg_empty(const char *fname);
+extern void eeimg_empty(struct eeparams *params);
 
 /*! @struct eeimg_desc
  *   EEPROM image descriptor structure
  */
 struct eeimg_desc {
 	const char *name;
-	void (*write)(const char *fname);
+	void (*write)(struct eeparams *);
 };
 
 /*! @var eeimg_sd
@@ -75,16 +77,15 @@ static struct eeimg_desc eeimgs[] = {
 /*! @fn void write_eeimg(const char *imgname, const char *fname)
  *   Write EEPROM image with name 'imgname' to file
  *
- *  @param imgname image name
- *  @param fname file name
+ *  @param params output image paramters
  *  @exception EEException
  */
-void write_eeimg(const char *imgname, const char *fname)
+void write_eeimg(struct eeparams *params)
 {
 	/* Find an image with passed name and call it callback method */
 	for (unsigned int idx = 0; idx < EEIMGS_CNT; idx++) {
-		if (!strcmp(imgname, eeimgs[idx].name)) {
-			eeimgs[idx].write(fname);
+		if (!strcmp(params->iname, eeimgs[idx].name)) {
+			eeimgs[idx].write(params);
 			return;
 		}
 	}

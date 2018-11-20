@@ -16,6 +16,7 @@
 #include <stdint.h>
 #include "EEExtBlock.h"
 #include "img/idt_89hpesXnt8.h"
+#include "img/eeimg.h"
 
 /*! @var ntx_base
  *   NT-function registers base addresses (NTx_BASE)
@@ -92,12 +93,12 @@ static const uint32_t swportdevnum[IDT_PORTCNT] = {0, 0, 0, 0, 0, 0, 0, 0};
 /*! @fn void eeimg_cncbp_nts(const char *fname)
  *   Write CNC BP EEPROM image
  *
- *  @param fname file name to write firmware to
+ *  @param params output image paramters
  *  @exception EEEXception
  */
-void eeimg_cncbp_nts(const char *fname)
+void eeimg_cncbp_nts(struct eeparams *params)
 {
-	EEExtBlock iface(fname);
+	EEExtBlock iface(params->fname);
 	int idx;
 
 	/* Drop all delays to speed the load up */

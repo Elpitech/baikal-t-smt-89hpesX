@@ -15,14 +15,23 @@
 #ifndef EEIMG_H
 #define EEIMG_H
 
-/*! @fn void write_eeimg(const char *imgname, const char *fname)
- *   Write EEPROM image with name 'imgname' to file
+/*! @struct EE-image parameters
+ *   Requested EE-image setting passed to ancestors class methods
+ */
+struct eeparams {
+	const char *iname;
+	const char *fname;
+	const char *dsrange;
+	bool lse;
+};
+
+/*! @fn void write_eeimg(struct eeparams *params)
+ *   Write EEPROM image with paramters from the structure 
  *
- *  @param imgname image name
- *  @param fname file name
+ *  @param params set of image paramters
  *  @exception EEException
  */
-extern void write_eeimg(const char *imgname, const char *fname);
+extern void write_eeimg(struct eeparams *params);
 
 #endif /* EEIMG_H */
 

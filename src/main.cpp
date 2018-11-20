@@ -30,8 +30,9 @@ static void eefw_usage(const char *progname) {
 		"Print EEPROM <image> either to a <file> or to stdout" << std::endl <<
 		std::endl <<
 		"Options:" << std::endl <<
-		"  -i  name of image to print: cnccu, cncbp, cncbp_lse, cncbp_p4ds, cncbp_nts, empty" << std::endl <<
-		"  -o  optional file name to print image to (stdout used by default)" <<
+		"  -i <image> - image being generated: cnccu, cncbp, cncbp_lse, cncbp_p4ds, cncbp_nts, empty" << std::endl <<
+		"  -l         - low-swing SerDes mode (makes sense for cncbp image only)" << std::endl <<
+		"  -o <file>  - file name to print image to (stdout used by default)" <<
 		std::endl << std::endl;
 }
 
@@ -39,21 +40,25 @@ int main(int argc, char *argv[]) {
 	bool usage_flag = false;
 
 	try {
-		const char *image = NULL, *fname = NULL;
+		struct eeparams params = {0};
+		bool lse = false;
 		int opt;
 
 		/* Parse the arguments passed to the program */
 		opterr = 0; /* No need to print an error */
-		while ((opt = getopt(argc,argv,"i:o:h")) != -1) {
+		while ((opt = getopt(argc,argv,"i:lo:h")) != -1) {
 			switch (opt) {
 			case 'h':
 				eefw_usage(argv[0]);
 				return SUCCESS;
 			case 'i':
-				image = optarg;
+				params.iname = optarg;
+				break;
+			case 'l':
+				params.lse = true;
 				break;
 			case 'o':
-				fname = optarg;
+				params.fname = optarg;
 				break;
 			case ':':
 				usage_flag = true;
@@ -69,13 +74,13 @@ int main(int argc, char *argv[]) {
 		}
 
 		/* If image isn't specified then throw an exception */
-		if (image == NULL) {
+		if (params.iname == NULL) {
 			usage_flag = true;
 			throw EEException("image name isn't specified");
 		}
 
 		/* Perform image write operation in complience with arguments */
-		write_eeimg(image, fname);
+		write_eeimg(&params);
 
 		return SUCCESS;
 	} catch (std::exception &e) {
