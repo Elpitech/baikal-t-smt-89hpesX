@@ -85,6 +85,6 @@ void write_eeimg(struct eeparams *params)
 	}
 
 	/* If failed to find an image then throw an exception */
-	throw EEException("couldn't find image with passed name");
+	throw EEException("couldn't find image with passed name", true);
 }
 

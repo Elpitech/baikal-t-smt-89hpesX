@@ -24,15 +24,20 @@
 class EEException: public std::exception {
 	/* String to hold the exception description */
 	std::string m_msg;
+	bool m_usage;
 
 public:
 	/* Class constructor */
-	EEException(const std::string &msg) throw(): m_msg(msg) {}
+	EEException(const std::string &msg, bool usage) throw(): m_msg(msg), m_usage(usage)  {}
 	~EEException() throw() {}
 
 	/* String description of the exception */
 	virtual const char *what() const throw() {
 		return m_msg.c_str();
+	}
+
+	virtual bool usage() const throw() {
+		return m_usage;
 	}
 };
 

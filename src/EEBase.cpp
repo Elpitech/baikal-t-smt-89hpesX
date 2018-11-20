@@ -98,7 +98,7 @@ void EEBase::empty(uint16_t count)
 void EEBase::wait(uint32_t csr, uint32_t data, uint32_t mask)
 {
 	/* It's not supported by the base class */
-	throw EEException("wait block is unsupported");
+	throw EEException("wait block is unsupported", false);
 }
 
 /*! @fn void EEBase::jump(uint8_t code, uint32_t eeaddr)
@@ -110,6 +110,6 @@ void EEBase::wait(uint32_t csr, uint32_t data, uint32_t mask)
  */
 void EEBase::jump(uint8_t code, uint32_t eeaddr)
 {
-	throw EEException("jump block is unsupported");
+	throw EEException("jump block is unsupported", false);
 }
 

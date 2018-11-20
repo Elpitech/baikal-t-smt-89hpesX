@@ -37,8 +37,6 @@ static void eefw_usage(const char *progname) {
 }
 
 int main(int argc, char *argv[]) {
-	bool usage_flag = false;
-
 	try {
 		struct eeparams params = {0};
 		bool lse = false;
@@ -61,12 +59,10 @@ int main(int argc, char *argv[]) {
 				params.fname = optarg;
 				break;
 			case ':':
-				usage_flag = true;
-				throw EEException(std::string("option -") + (char)optopt + " requires an operand");
+				throw EEException(std::string("option -") + (char)optopt + " requires an operand", true);
 				break;
 			case '?':
-				usage_flag = true;
-				throw EEException(std::string("invalid argument -") + (char)optopt);
+				throw EEException(std::string("invalid argument -") + (char)optopt, true);
 				break;
 			default:
 				break;
@@ -75,18 +71,19 @@ int main(int argc, char *argv[]) {
 
 		/* If image isn't specified then throw an exception */
 		if (params.iname == NULL) {
-			usage_flag = true;
-			throw EEException("image name isn't specified");
+			throw EEException("image name isn't specified", true);
 		}
 
 		/* Perform image write operation in complience with arguments */
 		write_eeimg(&params);
 
 		return SUCCESS;
-	} catch (std::exception &e) {
+	} catch (EEException &e) {
 		std::cerr << "Got an exception: " << e.what() << std::endl << std::endl;
-		if (usage_flag)
+		if (e.usage())
 			eefw_usage(argv[0]);
+	} catch (std::exception &e) {
+		std::cerr << "Got an unkown exception: " << e.what() << std::endl << std::endl;
 	}
 
 	return FAIL;

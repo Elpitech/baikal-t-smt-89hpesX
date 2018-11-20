@@ -121,6 +121,6 @@ void EEExtBlock::wait(uint32_t csr, uint32_t data, uint32_t mask)
  */
 void EEExtBlock::jump(uint8_t code, uint32_t eeaddr)
 {
-	throw EEException("jump block is unsupported");
+	throw EEException("jump block is unsupported", false);
 }
 
