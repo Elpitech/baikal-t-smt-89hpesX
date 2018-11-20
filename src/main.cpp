@@ -26,12 +26,13 @@
  */
 static void eefw_usage(const char *progname) {
 	std::cout << "Usage:" << std::endl <<
-		"  " << progname << " -i <image> [-l -o <file>]" << std::endl <<
+		"  " << progname << " -i <image> [-d <ports> -l -o <file>]" << std::endl <<
 		"Print EEPROM <image> either to a <file> or to stdout" << std::endl <<
 		std::endl <<
 		"Options:" << std::endl <<
 		"  -i <image> - image being generated: cnccu, cncbp, cncbp_p4ds, cncbp_nts, empty" << std::endl <<
 		"  -l         - low-swing SerDes mode (makes sense for cncbp image only)" << std::endl <<
+		"  -d <ports> - comma-separated dowstream ports (cncbp specific subset of 4,6,8,12,16,20)" << std::endl <<
 		"  -o <file>  - file name to print image to (stdout used by default)" <<
 		std::endl << std::endl;
 }
@@ -44,7 +45,7 @@ int main(int argc, char *argv[]) {
 
 		/* Parse the arguments passed to the program */
 		opterr = 0; /* No need to print an error */
-		while ((opt = getopt(argc,argv,"i:lo:h")) != -1) {
+		while ((opt = getopt(argc,argv,"i:ld:o:h")) != -1) {
 			switch (opt) {
 			case 'h':
 				eefw_usage(argv[0]);
@@ -54,6 +55,9 @@ int main(int argc, char *argv[]) {
 				break;
 			case 'l':
 				params.lse = true;
+				break;
+			case 'd':
+				params.dstr = optarg;
 				break;
 			case 'o':
 				params.fname = optarg;
@@ -79,11 +83,11 @@ int main(int argc, char *argv[]) {
 
 		return SUCCESS;
 	} catch (EEException &e) {
-		std::cerr << "Got an exception: " << e.what() << std::endl << std::endl;
+		std::cerr << "Error: " << e.what() << std::endl << std::endl;
 		if (e.usage())
 			eefw_usage(argv[0]);
 	} catch (std::exception &e) {
-		std::cerr << "Got an unkown exception: " << e.what() << std::endl << std::endl;
+		std::cerr << "Unkown exception: " << e.what() << std::endl << std::endl;
 	}
 
 	return FAIL;

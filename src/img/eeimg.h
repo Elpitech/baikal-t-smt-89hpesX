@@ -21,7 +21,7 @@
 struct eeparams {
 	const char *iname;
 	const char *fname;
-	const char *dsrange;
+	const char *dstr;
 	bool lse;
 };
 

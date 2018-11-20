@@ -13,7 +13,10 @@
  *   Details about the file
  */
 
+#include <string>
+#include <iostream>
 #include <stdint.h>
+#include "EEException.h"
 #include "EEExtBlock.h"
 #include "img/idt_89hpesXnt8.h"
 #include "img/eeimg.h"
@@ -99,6 +102,71 @@ static struct port_cfg port[IDT_PORTCNT] = {
 	 .mode = SWPORTxCTL_MODE_NT,   .part = 6, .devnum = 0}
 };
 
+/*!@var port_map
+ *  Backward ports mapping
+ */
+static const int portidx_tbl[24] = {
+	/*  0   1   2   3   4   5   6   7   8   9  10  11 */
+	   -1, -1, -1, -1,  2, -1,  3, -1,  4, -1, -1, -1,
+	/* 12  13  14  15  16  17  18  19  20  21  22  23 */
+		5, -1, -1, -1,  6, -1, -1, -1,  7, -1, -1, -1
+};
+
+/*! @fn void eeimg_setds(const char *dstr)
+ *   Parse down-stream ports list and update the ports config table
+ *
+ *  @param dstr string of comma-separated port IDs
+ *  @return number of partitions to initialize
+ *  @exception EEEXception
+ */
+static int eeimg_setds(const char *dstr)
+{
+	int val, part_limit, port_ds;
+	std::string str;
+	size_t pos;
+
+	/* If no DS-list argument specified then dstr will be NULL, so use default
+	 * setting */
+	if (!dstr)
+		return (IDT_PARTCNT - 1);
+
+	str = dstr;
+
+	/* Fully parse the specified string */
+	while (!str.empty()) {
+		/* Parse a number from the start up to comma or the end */
+		port_ds = std::stoul(str, &pos, 10);
+		if (port_ds >= 24 || portidx_tbl[port_ds] == -1)
+			throw EEException(std::string("Invalid port ") + std::to_string(port_ds), true);
+
+		/* If retrieved port is appropriate, then set the DS mode to the port */
+		port[portidx_tbl[port_ds]].mode = SWPORTxCTL_MODE_DS;
+
+		/* Discard the parsed number from the string */
+		str = str.substr(pos, std::string::npos);
+		if (!str.empty()) {
+			if (str.at(0) == ',')
+				str = str.substr(1, std::string::npos);
+			else
+				throw EEException("Invalid format of DS ports string", true);
+		}
+	}
+
+	/* Update partitions table so US and DS ports would belong to the same
+	 * partition. Start from port 4, since ports 0 and 2 must preserve
+	 * static settings in our configuration */
+	for (pos = 2, part_limit = 1; pos < IDT_PORTCNT; pos++) {
+		if (port[pos].mode == SWPORTxCTL_MODE_DS) {
+			port[pos].part = 0;
+			port[pos].devnum = port[pos].id;
+		} else {
+			port[pos].part = part_limit++;
+		}
+	}
+
+	return part_limit;
+}
+
 /*! @fn void eeimg_cncbp(const char *fname)
  *   Write CNC BP EEPROM image
  *
@@ -108,7 +176,10 @@ static struct port_cfg port[IDT_PORTCNT] = {
 void eeimg_cncbp(struct eeparams *params)
 {
 	EEExtBlock iface(params->fname);
-	int idx;
+	int idx, part_limit;
+
+	/* Parse the passed table of downstream ports */
+	part_limit = eeimg_setds(params->dstr);
 
 	/* Drop all delays to speed the load up */
 	for (idx = 0; idx < DELAYS_CNT; idx++) {
@@ -130,9 +201,10 @@ void eeimg_cncbp(struct eeparams *params)
 	iface.init(CSR(SW_BASE, IOEXPADDR4), IOEXPADDR4_INIT);
 	iface.init(CSR(SW_BASE, IOEXPADDR5), IOEXPADDR5_INIT);
 
-	/* Initialize the port partitions 0-6 and wait until the change is done, then
-	 * clear the status register */
-	for (idx = 0; idx < (IDT_PARTCNT - 1); idx++) {
+	/* Initialize the port partitions needed to fulfill the ports mode settings. After 
+	 * initialization we need to wait until the change is done, then clear the status
+	 * register */
+	for (idx = 0; idx < part_limit; idx++) {
 		/* Enable partition with idx */
 		iface.init(CSR(SW_BASE, part[idx].swpartctl), SWPARTxCTL_STATE_EN);
 		/* Wait for partition state is changed */
@@ -142,8 +214,9 @@ void eeimg_cncbp(struct eeparams *params)
 	}
 
 	/* Initialize the ports mode and wait until the change is done
-	 * Port 0(US+NT), 2(DS) belong to partition 0
-	 * Ports 4 - 20 (NT) respectively belong to the partitions 1 - 6
+	 * Port 0(US+NT), 2(DS) belong to partition 0 - it's static config and can't be changed
+	 * Ports 4 - 20 can be either DS or NT. In first case it belong to partition 0,
+	 * in the second - to partitions from 1 to 7.
 	 * Then clear the status register */
 	for (idx = 0; idx < IDT_PORTCNT; idx++) {
 		/* Initialize port mode (US, DS or NT), device number and partition it
@@ -158,8 +231,8 @@ void eeimg_cncbp(struct eeparams *params)
 
 	/* Enable the necessary BARs for all the NTB functions */
 	for (idx = 0; idx < IDT_PORTCNT; idx++) {
-		/* Skip port 2 since it has Downstream function enabled only */
-		if (idx == 1)
+		/* Skip pure down-stream ports */
+		if (port[idx].mode == SWPORTxCTL_MODE_DS)
 			continue;
 		/* BAR0 - Memory mapped Configuration space - x32 Non-prefetchable
 		 * memory mapped space. Since it is the registers space then it must be
@@ -198,8 +271,9 @@ void eeimg_cncbp(struct eeparams *params)
 	/* Set ACS capability for Upstream port (errata #8 - for PCIe standard) */
 	//iface.init(US0_BASE, ACSCAP), ACSCAP_INIT);
 
+	/* if used requested initialize SerDes low-swing mode with Tx driver voltage
+	 * levels */
 	if (params->lse) {
-		/* Initialize SerDes low-swing mode with Tx driver voltage levels */
 		for (idx = 0; idx < IDT_PORTCNT; idx++) {
 			/* Enable low-swing mode */
 			iface.init(CSR(port[idx].usx_base, SERDESCFG), SERDESCFG_LSE_EN);
