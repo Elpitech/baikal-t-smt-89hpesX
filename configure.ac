@@ -14,7 +14,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 AC_PREREQ([2.69])
 AC_INIT([IDT EEPROM firmware], [1.0], [Sergey.Semin@t-platforms.ru])
-: ${CXXFLAGS="-O3"}
+: ${CXXFLAGS="-O3 -std=c++11"}
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([src/config.h])
 AC_CONFIG_MACRO_DIR([m4])

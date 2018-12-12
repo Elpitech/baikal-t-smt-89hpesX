@@ -186,8 +186,7 @@ void eeimg_cncbp(struct eeparams *params)
 		iface.init(CSR(SW_BASE, delay[idx].reg), delay[idx].no);
 	}
 
-	/* Initialize the ports clocking mode so the Port 0 works in local clock-mode
-	 * and others have global clock */
+	/* Initialize the ports clocking mode so all ports would work from global clocks source */
 	iface.init(CSR(SW_BASE, PCLKMODE), PCLKMODE_INIT);
 
 	/* Mark all ports as having non-common clock mode */
