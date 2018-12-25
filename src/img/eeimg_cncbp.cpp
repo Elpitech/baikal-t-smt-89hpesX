@@ -164,6 +164,11 @@ static int eeimg_setds(const char *dstr)
 		}
 	}
 
+	/* If all ports 4 - 20 switched to DS mode, then there is no need in having
+	 * the port 0 NT-function enabled. Setup it being pure US */
+	if (part_limit == 1)
+		port[0].mode = SWPORTxCTL_MODE_US;
+
 	return part_limit;
 }
 
@@ -213,7 +218,7 @@ void eeimg_cncbp(struct eeparams *params)
 	}
 
 	/* Initialize the ports mode and wait until the change is done
-	 * Port 0(US+NT), 2(DS) belong to partition 0 - it's static config and can't be changed
+	 * Port 0(US+NT/US), 2(DS) belong to partition 0 - it's static config and can't be changed
 	 * Ports 4 - 20 can be either DS or NT. In first case it belong to partition 0,
 	 * in the second - to partitions from 1 to 7.
 	 * Then clear the status register */
@@ -263,7 +268,7 @@ void eeimg_cncbp(struct eeparams *params)
 	/* Set ACS capability for Upstream port (errata #8 - for PCIe standard) */
 	//iface.init(US0_BASE, ACSCAP), ACSCAP_INIT);
 
-	/* if used requested initialize SerDes low-swing mode with Tx driver voltage
+	/* if requested initialize SerDes low-swing mode with Tx driver voltage
 	 * levels */
 	if (params->lse) {
 		for (idx = 0; idx < IDT_PORTCNT; idx++) {
